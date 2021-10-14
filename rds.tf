@@ -1,6 +1,7 @@
 ########
 # RDS
 ########
+
 resource "aws_db_instance" "rds" {
   identifier        = "mydb"
   allocated_storage = 10
@@ -8,8 +9,9 @@ resource "aws_db_instance" "rds" {
   engine_version    = "8.0.20"
   instance_class    = "db.t2.micro"
   name              = "mgkdb"
-  username          = "admin"
-  password          = "cloocusaws"
+  username          = var.mysqluser
+  password          = var.mysqlpassword
+ 
   #parameter_group_name = aws_db_parameter.rds_sub_group.name
   db_subnet_group_name = aws_db_subnet_group.rds_sub_group.name
 

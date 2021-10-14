@@ -17,7 +17,7 @@ terraform/**/*.backup
 *.tfplan
 terraform.tfstate.backup
 .terraform.lock.hcl
-
+.terraform.tfstate.lock.info
 /**/.kitchen
 
 ansible/applessbackup
