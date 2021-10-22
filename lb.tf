@@ -14,47 +14,78 @@ resource "aws_lb" "alb_web" {
 }
 
 
-
-#############
-#targetgroup
-#############
-
-resource "aws_lb_target_group" "tg_web" {
-  name        = "atg-web"
-  port        = "80"
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.vpc.id
-  target_type = "instance"
-  tags        = { Name = "tg-web" }
-}
-
-
 # create listener
 
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb_web.arn
   port              = "80"
   protocol          = "HTTP"
+
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.tg_web.arn
+    type = "forward"
+
+    forward {
+
+      target_group {
+        arn    = aws_lb_target_group.tg_web_a.arn
+        weight = 50
+      }
+
+      target_group {
+        arn    = aws_lb_target_group.tg_web_c.arn
+        weight = 50
+      }
+      stickiness {
+        enabled  = false
+        duration = 1
+      }
+    }
   }
 }
+
+
+
+
+
+#############
+#targetgroup
+#############
+
+resource "aws_lb_target_group" "tg_web_a" {
+  name        = "atg-web-a"
+  port        = "80"
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.vpc.id
+  target_type = "instance"
+  tags        = { Name = "tg-web-a" }
+}
+
+resource "aws_lb_target_group" "tg_web_c" {
+  name        = "atg-web-c"
+  port        = "80"
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.vpc.id
+  target_type = "instance"
+  tags        = { Name = "tg-web-c" }
+}
+
 
 
 # web-server attachment
 
 resource "aws_lb_target_group_attachment" "att_web_a" {
-  target_group_arn = aws_lb_target_group.tg_web.arn
+  target_group_arn = aws_lb_target_group.tg_web_a.arn
   target_id        = aws_instance.web_a.id
   port             = 80
 }
 
 resource "aws_lb_target_group_attachment" "att_web_c" {
-  target_group_arn = aws_lb_target_group.tg_web.arn
+  target_group_arn = aws_lb_target_group.tg_web_c.arn
   target_id        = aws_instance.web_c.id
   port             = 80
 }
+
+
 
 ########################
 # Network Load Balancer
@@ -72,6 +103,18 @@ resource "aws_lb" "nlb_was" {
 }
 
 
+# create listener
+
+resource "aws_lb_listener" "nlb_listener" {
+  load_balancer_arn = aws_lb.nlb_was.arn
+  port              = "8080"
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.tg_was.arn
+  }
+}
+
 
 #############
 #targetgroup
@@ -84,19 +127,6 @@ resource "aws_lb_target_group" "tg_was" {
   vpc_id      = aws_vpc.vpc.id
   target_type = "instance"
   tags        = { Name = "ntg-was" }
-}
-
-
-# create listener
-
-resource "aws_lb_listener" "nlb_listener" {
-  load_balancer_arn = aws_lb.nlb_was.arn
-  port              = "8080"
-  protocol          = "TCP"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.tg_was.arn
-  }
 }
 
 

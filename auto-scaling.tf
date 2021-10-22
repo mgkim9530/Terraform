@@ -6,7 +6,7 @@
 resource "aws_launch_template" "launch_temp" {
   name = "auto-Scaling"
 
-  image_id = "ami-0776ef61237651e09"
+  image_id = "ami-0e4a9ad2eb120e054"
 
   instance_type = "t2.micro"
 
@@ -33,7 +33,7 @@ resource "aws_launch_template" "launch_temp" {
     }
   }
 
-  user_data = filebase64("web.sh")
+  user_data = filebase64("web1.sh")
 
 }
 
@@ -44,11 +44,11 @@ resource "aws_launch_template" "launch_temp" {
 
 resource "aws_autoscaling_group" "as_group" {
   name                      = "as_group"
-  max_size                  = 6
-  min_size                  = 1
+  max_size                  = 4
+  min_size                  = 0
   health_check_grace_period = 180
   health_check_type         = "ELB"
-  desired_capacity          = 1
+  desired_capacity          = 0
   force_delete              = true
   launch_template {
     id      = aws_launch_template.launch_temp.id
@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "as_group" {
 
   vpc_zone_identifier = [aws_subnet.private_subnet_web_a.id, aws_subnet.private_subnet_web_c.id]
 
-  target_group_arns = [aws_lb_target_group.tg_web.arn]
+  target_group_arns = [aws_lb_target_group.tg_web_a.arn]
 
   tag {
     key                 = "Name"

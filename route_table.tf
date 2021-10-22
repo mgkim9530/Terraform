@@ -46,6 +46,8 @@ resource "aws_route" "private_rt" {
   nat_gateway_id         = aws_nat_gateway.ngw.id
 }
 
+
+#route table association for web
 resource "aws_route_table_association" "private_rt_web_a" {
 
   subnet_id      = aws_subnet.private_subnet_web_a.id
@@ -59,18 +61,21 @@ resource "aws_route_table_association" "private_rt_web_c" {
   route_table_id = aws_route_table.private_rt.id
 }
 
+
+# route_table association for was
 resource "aws_route_table_association" "private_rt_was_a" {
 
   subnet_id      = aws_subnet.private_subnet_was_a.id
   route_table_id = aws_route_table.private_rt.id
 }
 
-
 resource "aws_route_table_association" "private_rt_was_c" {
 
   subnet_id      = aws_subnet.private_subnet_was_c.id
   route_table_id = aws_route_table.private_rt.id
-}
+
+
+} # route table association for db
 resource "aws_route_table_association" "private_rt_db_a" {
 
   subnet_id      = aws_subnet.private_subnet_db_a.id

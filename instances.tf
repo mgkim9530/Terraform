@@ -26,22 +26,9 @@ resource "aws_instance" "web_a" {
   vpc_security_group_ids = [aws_security_group.webserver_sg.id]
 
 
-  user_data = <<-EOF
-              #!/bin/bash
-	      sudo -s
-              yum -y update
-	      amazon-linux-extras install nginx1
-	      systemctl restart nginx
-              EOF
+  user_data = filebase64("web1.sh")
 
   tags = { Name = "web-a" }
-
-
-
-
-
-
-
 
 }
 
@@ -55,13 +42,7 @@ resource "aws_instance" "web_c" {
   vpc_security_group_ids = [aws_security_group.webserver_sg.id]
 
 
-  user_data = <<-EOF
-              #!/bin/bash
-	      sudo -s
-              yum -y update
-	      amazon-linux-extras install nginx1
-	      systemctl restart nginx
-              EOF
+  user_data = filebase64("web2.sh")
 
   tags = { Name = "web-c" }
 }
@@ -114,3 +95,5 @@ EOF
 
   tags = { Name = "was-c" }
 }
+
+

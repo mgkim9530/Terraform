@@ -1,7 +1,7 @@
 #! /bin/bash
 sudo -s
 yum -y update
-amazon-linux-extras install nginxi1
+amazon-linux-extras install nginx1
 rm /usr/share/nginx/html/index.html
 touch /usr/share/nginx/html/index.html
 
