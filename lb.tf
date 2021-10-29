@@ -28,12 +28,12 @@ resource "aws_lb_listener" "alb_listener" {
 
       target_group {
         arn    = aws_lb_target_group.tg_web_a.arn
-        weight = 50
+        weight = 100
       }
 
       target_group {
         arn    = aws_lb_target_group.tg_web_c.arn
-        weight = 50
+        weight = 0
       }
       stickiness {
         enabled  = false
